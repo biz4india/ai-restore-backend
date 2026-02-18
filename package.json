@@ -1,0 +1,7 @@
+{
+  "name": "ai-restore",
+  "type": "module",
+  "dependencies": {
+    "replicate": "^0.25.0"
+  }
+}
