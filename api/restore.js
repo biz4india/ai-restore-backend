@@ -19,11 +19,11 @@ export default async function handler(req, res) {
     });
 
     const output = await replicate.run(
-      "sczhou/codeformer:latest",
+      "nightmareai/real-esrgan",
       {
         input: {
           image: image,
-          fidelity: 0.7
+          scale: 2
         }
       }
     );
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ result: output });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERROR:", error);
     return res.status(500).json({ error: error.message });
   }
 }
