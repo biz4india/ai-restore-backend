@@ -2,7 +2,7 @@ import Replicate from "replicate";
 
 export default async function handler(req, res) {
 
-  // ✅ CORS FIX
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -32,9 +32,17 @@ export default async function handler(req, res) {
       }
     );
 
-    return res.status(200).json({ result: output });
+    // 🔥 FIX HERE
+    const finalImage = Array.isArray(output) ? output[0] : output;
+
+    return res.status(200).json({
+      result: finalImage
+    });
+
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      error: error.message
+    });
   }
 }
