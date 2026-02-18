@@ -2,7 +2,7 @@ import Replicate from "replicate";
 
 export default async function handler(req, res) {
 
-  // CORS
+  // Allow CORS (Important for Blogger)
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -16,33 +16,33 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { image } = req.body;
+
+    if (!image) {
+      return res.status(400).json({ error: "No image provided" });
+    }
+
     const replicate = new Replicate({
       auth: process.env.REPLICATE_API_TOKEN,
     });
 
-    const { image } = req.body;
-
     const output = await replicate.run(
-      "nightmareai/real-esrgan",
+      "sczhou/codeformer:latest",
       {
         input: {
           image: image,
-          scale: 2
+          fidelity: 0.7
         }
       }
     );
 
-    // 🔥 FIX HERE
-    const finalImage = Array.isArray(output) ? output[0] : output;
+    // 🔥 Handle array response
+    const resultImage = Array.isArray(output) ? output[0] : output;
 
-    return res.status(200).json({
-      result: finalImage
-    });
+    return res.status(200).json({ result: resultImage });
 
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      error: error.message
-    });
+    console.error("Server Error:", error);
+    return res.status(500).json({ error: error.message });
   }
 }
